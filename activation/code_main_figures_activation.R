@@ -6,6 +6,7 @@ library(dittoSeq)
 library(viridis)
 library(RColorBrewer)
 library(ggthemes)
+library(EnhancedVolcano)
 library(sceasy)
 library(immunarch)
 
