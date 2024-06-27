@@ -36,7 +36,7 @@ pbmc.combined <- FindClusters(pbmc.combined, resolution = 0.5)
 
 pbmc.markers <- FindAllMarkers(pbmc.combined, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
 pbmc.markers %>% group_by(cluster) %>% top_n(n = 5, wt = avg_log2FC) -> top5
-DoHeatmap(pbmc.merged, features = top5$gene) + NoLegend()
+DoHeatmap(pbmc.combined, features = top5$gene) + NoLegend()
 
 new.cluster.ids <- c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21")
 names(new.cluster.ids) <- levels(pbmc.combined)
