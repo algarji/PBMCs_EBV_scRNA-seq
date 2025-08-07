@@ -160,18 +160,7 @@ cluster18.markers <- FindMarkers(pbmc.merged, ident.1 = '18', ident.2=c('3', '7'
 cluster18 <- filter(cluster18.markers, avg_log2FC > 0.58 & p_val_adj < 0.05)
 dittoHeatmap(cd4, genes = c(c('S100A10', 'S100A6', 'KLF2', 'LGALS3', 'AQP3', 'CLIC3', 'CXCR6', 'CCR2', 'CCR5', 'HPGD', 'PXN', 'GZMA', 'SYTL2', 'GNLY', 'NKG7', 'ZBED2', 'TNFSF4', 'RDH10', 'CD83', 'BHLHE40', 'XCL1', 'SIAH2', 'TNFRSF4', 'CD200', 'CSF2', 'DUSP2', 'IRF4', 'MYB', 'PDCD1', 'TOX2', 'TCF7', 'PLAC8', 'CCR7', 'LEF1', 'NELL2', 'FOXP3', 'RTKN2', 'IL2RA', 'BCL2', 'ADTRP', 'CXCR4', 'SOCS3')), annot.by = c("RNA_snn_res.0.5", "status"), scaled.to.max = TRUE, order.by=c('RNA_snn_res.0.5', 'status'), complex = TRUE, cluster_rows=FALSE, heatmap.colors.max.scaled = colorRampPalette(c("white", "black"))(25))
 
-# FIGURE 2H
-
-gene.sets <- list(Tfh <- c('BCL6', 'BTLA', 'CD200', 'CD3D', 'CD3E', 'CD3G', 'CD4', 'CD40LG', 'CXCR3', 'CXCR5', 'ICA1', 'ICOS', 'IL21R', 'IL6ST', 'MAGEH1', 'PDCD1', 'PTPN13', 'SLAM', 'STAT3', 'TNFSF4', 'TOX', 'TOX2'))
-cd4 <- subset(pbmc.merged, idents = c("3", "7", "15", "18"))
-ES <- enrichIt(obj = cd4, gene.sets = gene.sets, min.size = NULL)
-cd4 <- AddMetaData(cd4, ES)
-cd4@meta.data$active.idents <- cd4@active.ident
-ES2 <- data.frame(cd4[[]], Idents(cd4))
-colnames(ES2)[ncol(ES2)] <- "cluster_escape"
-ridgeEnrichment(ES2, gene.set = 'output', group = "cluster_escape", add.rug = TRUE)
-
-#FIGURE 2I
+#FIGURE 2H
 
 cd8 <- subset(pbmc.merged, idents = c("9"))
 cd8 <- DietSeurat(cd8)
@@ -191,17 +180,17 @@ cluster <- unname(cluster)
 cd8@meta.data$cluster = cluster
 DimPlot(cd8, cols = c('#E31A1C', '#762A83', '#08519C', '#FF7F00', '#33A02C'), shuffle=TRUE)
 
-# FIGURE 2J
+# FIGURE 2I
 
 DimPlot(cd8, group.by='status', cols = c('#29AF7FFF', '#F987C5'), shuffle=TRUE))
 
-# FIGURE 2K
+# FIGURE 2J
 
 cd8.markers <- FindAllMarkers(cd8, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
 cd8.markers %>% group_by(cluster) %>% top_n(n = 10, wt = avg_log2FC) -> top10
 DoHeatmap(cd8, features = top10$gene, group.colors = c('#E31A1C', '#762A83', '#08519C', '#FF7F00', '#33A02C')) + NoLegend() + scale_fill_gradientn(colors = c('white',"white", "#D33682"))
 
-# FIGURE 2L
+# FIGURE 2K
 
 Idents(cd8) <- 'status'
 cd8.status.markers <- FindAllMarkers(cd8, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
@@ -211,7 +200,7 @@ pseudo <- pseudo$RNA
 pseudo <- filter(pseudo, Healthy > 0.1 | MAGT1 > 0.1)
 pheatmap(pseudo, show_rownames = FALSE, border_color = 'black', cluster_cols = FALSE, cluster_rows=FALSE, cellwidth = 15, fontsize_row = 5)
 
-# FIGURE 2M
+# FIGURE 2L
 
 Idents(cd8) <- 'status'
 cd8_healthy <- subset(cd8, idents=c('Healthy'))
@@ -219,16 +208,7 @@ FeaturePlot(cd8_healthy, features=c('GNLY'), order=TRUE) + scale_color_gradientn
 cd8_magt1 <- subset(cd8, idents=c('MAGT1'))
 FeaturePlot(cd8_magt1, features=c('GNLY'), order=TRUE) + scale_color_gradientn(colours=viridis::magma(100))
 
-# FIGURE 2N
-
-nk <- subset(pbmc.merged, idents=c('5', '17'))
-dittoBarPlot(nk, 'number', 'status', color.panel = c('#B07AA1', '#59A14F')) + theme_minimal()
-
-# FIGURE 2O
-
-VlnPlot(nk, features=c('CX3CR1', 'FGFBP2', 'FCGR3A', 'NCAM1', 'COTL1', 'XCL1'), cols=c('#59A14F', '#B07AA1'))
-
-# FIGURE 2P
+# FIGURE 2M
 
 new.cluster.ids <- c("cluster_1", "cluster_2", "cluster_3", "cluster_4", "cluster_5", "cluster_6", "cluster_7", "cluster_8", "cluster_9", "cluster_10", "cluster_11", "cluster_12", "cluster_13", "cluster_14", "cluster_15", "cluster_16", "cluster_17", "cluster_18")
 names(new.cluster.ids) <- levels(pbmc.merged)
