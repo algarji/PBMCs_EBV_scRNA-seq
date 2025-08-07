@@ -150,7 +150,7 @@ dittoBarPlot(cd8, "cluster", group.by = "Mutation", scale = "count", colors=c('#
 # FIGURE 4H
 
 cd8_subset <- subset(cd8, idents=c('1', '2', '3'))
-DoHeatmap(cd8_subset, features = c('IL7R', 'KLRG1', 'DUSP2', 'XCL1', 'FCRL3', 'GZMK', 'CD27', 'SH2D1A', 'SELL', 'TIGIT', 'CX3CR1', 'ITGB1', 'GZMB', 'TBX21', 'CLIC3', 'ASCL2', 'GZMH', 'GNLY', 'ZNF683', 'FGFBP2', 'ADGRG1', 'FCRL6', 'KLRD1', 'KLRC2', 'KLRC1', 'CCR5', 'CD82', 'FAM111B', 'CD70', 'FAM207A', 'CD28', 'TOMM40', 'CCR1', 'IL2RA', 'NME1', 'LGALS1', 'CARHSP1', 'HLA-DRA', 'GPI', 'APOBEC3H', 'LGALS3', 'HOPX', 'CD38', 'FABP5', 'DUSP4', 'LTB'), group.colors = c('#207AB7', '#2DA237', '#D9282A')) + NoLegend()
+DoHeatmap(cd8_subset, features = c('IL7R', 'XCL1', 'FCRL3', 'EOMES', 'KLRG1', 'DUSP2', 'GZMK', 'CD27', 'SH2D1A', 'SELL', 'TIGIT', 'GNLY', 'GZMB', 'GZMH', 'TBX21', 'ITGB1', 'CX3CR1', 'CLIC3', 'ASCL2', 'ZNF683', 'FGFBP2', 'ADGRG1', 'FCRL6', 'KLRD1', 'KLRC2', 'KLRC1', 'NME1', 'LGALS1', 'CARHSP1', 'HLA-DRA', 'GPI', 'FABP5', 'LTB', 'CCR5', 'CD82', 'CD70', 'FAM207A', 'CD28', 'TOMM40', 'LGALS3', 'HOPX', 'CD38', 'CCR1', 'IL2RA', 'FAM111B', 'APOBEC3H', 'DUSP4'), group.colors = c('#207AB7', '#2DA237', '#D9282A')) + NoLegend()
 
 # FIGURE 4I
 
@@ -223,19 +223,6 @@ table(nk@meta.data$cluster, nk@meta.data$Mutation)	## Represented in Prism
 
 # FIGURE 5B
 
-nk@meta.data$adapt <- 'Rest'
-metadata <- nk@meta.data
-metadata <- metadata %>% mutate(adapt = case_when(endsWith(cluster, "2") ~ "Adaptive"))
-Idents(nk) <- 'adapt'
-sceasy::convertFormat(nk, from="seurat", to="anndata", outFile='scanpy_nk.h5ad')
-# Python in Spyder in Anaconda
-adata =sc.read_h5ad("scanpy_nk.h5ad")
-markers = ['KLRC2', 'GZMH', 'LAG3', 'HLA-DRB1', 'FCRL6', 'PRSS23', 'ITM2A', 'FCER1G', 'KLRC1', 'KLRB1', 'NCR3', 'XCL1', 'CCL3', 'LTB']
-sc.tl.rank_genes_groups(adata, groupby='cluster', method='wilcoxon')
-sc.pl.rank_genes_groups_violin(adata, gene_names=markers, jitter= False, strip = False)
-
-# FIGURE 5C
-
 Idents(nk) <- 'cluster'
 nk_dim <- subset(nk, idents=c('1', '3'))
 Idents(nk_dim) <- 'Mutation'
@@ -245,20 +232,20 @@ adata =sc.read_h5ad("scanpy_nk_dim.h5ad")
 markers = ['KIR2DL1', 'KIR2DL3', 'KIR3DL1', 'KIR3DL2', 'KIR2DL4', 'KIR3DL3', 'FCGR3A', 'KLRC1', 'KLRK1']
 sc.pl.matrixplot(adata, markers, 'Mutation', cmap='seismic', standard_scale='group', colorbar_title='column scaled\nexpression', save='matrix_dim.pdf')
 
-# FIGURE 5D
+# FIGURE 5C
 
 nk_bright <- subset(nk, idents=c('4', '5'))
 Idents(nk_bright) <- 'Mutation'
 VlnPlot(nk_bright, features=c('CD38', 'STMN1', 'IL7R', 'JAML'), cols=c('#EC8BB8', '#31AF80'))
 
-# FIGURE 5E
+# FIGURE 5D
 
 # Subset Vd2 cells and annotate clusters
 Vd2_eff <- subset(Vd2, idents=c('2', '3'))
 Idents(Vd2_eff) <- 'Mutation'
 DotPlot(Vd2_eff, features = c('TRDV2', 'CD27', 'CD8A', 'TIGIT', 'CD69', 'TNF', 'CCL3', 'CCL4', 'XCL1', 'FASLG', 'GZMB', 'TNFSF10', 'TNFSF14'), cols = c("darkred", "darkblue"), dot.scale = 8, split.by = "cluster") + RotatedAxis()
 
-# FIGURE 5F
+# FIGURE 5E
 
 # Subset Vd1/3 cells and annotate clusters
 Vd1_cyto <- subset(Vd1, idents=c('2'))
@@ -269,19 +256,18 @@ adata =sc.read_h5ad("scanpy_Vd1.h5ad")
 markers = ['IL2RA', 'HLA-DRA', 'CD27', 'CD38', 'NCR3', 'ITGB7', 'CXCR3', 'CD82', 'TFRC', 'SLAMF1', 'PECAM1', 'CX3CR1', 'KLRB1', 'KLRD1', 'KLRG1', 'IL7R', 'GZMB', 'GNLY']
 sc.pl.heatmap(adata, markers, groupby='Mutation', cmap='viridis', standard_scale='var')
 
-# FIGURE 5G
+# FIGURE 5F
 
 Vd3 <- subset(Vd1, idents=c('3'))
 VlnPlot(Vd3, features=c('TRDV3', 'KIR2DL3', 'KLRB1', 'FCGR3A', 'CCL3', 'CCL4L2', 'KLRF1', 'GZMB', 'GZMH'), cols=c('#99488F'))
 
-# FIGURE 5H
+# FIGURE 5G
 
 # Subset MAIT cells and annotate clusters
-DimPlot(mait, label=TRUE)
+DimPlot(mait, split.by='donor_enrichment')
 
-# FIGURE 5I
+# FIGURE 5H
 
-sceasy::convertFormat(mait, from="seurat", to="anndata", outFile='scanpy_mait.h5ad')
 # Python in Spyder in Anaconda
 import numpy as np
 import pandas as pd
@@ -296,14 +282,4 @@ ir.pp.merge_with_ir(adata, adata_tcr)
 ir.tl.chain_qc(adata)
 adata = adata[~adata.obs["chain_pairing"].isin(["orphan VDJ", "orphan VJ", "extra VJ", "extra VDJ", "two full chains"]), :].copy()
 ir.tl.clonal_expansion(adata)
-ir.pl.clonal_expansion(adata, groupby="cluster", clip_at=4, normalize=False)
-
-# FIGURE 5J
-
-# Python in Spyder in Anaconda
-ir.pl.vdj_usage(adata, full_combination=False, max_segments=None, max_ribbons=30, fig_kws={"figsize": (8, 5)},)
-
-# FIGURE 5K
-
-# Python in Spyder in Anaconda
 sc.pl.umap(adata, color="cc_aa_alignment", groups=["52", "81", "103"], palette=cycler(color=mpl_cm.Dark2_r.colors),)
